@@ -19,7 +19,7 @@ object Main {
     val taxEntryStore = new DataEntryStore[TaxParcel](10)
     val filename = "data/2019-2020_Assessment_Roll-updated.csv"
 
-    var numLines = 5
+    var numLines = 1
     for (entry <- AssessmentUtilities.loadAssessmentEntries(filename, numLines)) {
       taxEntryStore.insert(entry)
     }

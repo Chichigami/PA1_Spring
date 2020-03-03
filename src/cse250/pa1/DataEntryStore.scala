@@ -9,8 +9,8 @@
  * http://creativecommons.org/licenses/by-nc-sa/4.0/.
  *
  * Submission author
- * UBIT:
- * Person#:
+ * UBIT:garyfeng
+ * Person#:50242102
  *
  * Collaborators (include UBIT name of each, comma separated):
  * UBIT:
@@ -19,7 +19,8 @@ package cse250.pa1
 
 import cse250.objects.{EmbeddedNode, EmbeddedEmpty, EmbeddedListNode}
 
-class DataEntryStore[A](private val _capacity: Int = 100)
+class
+DataEntryStore[A](private val _capacity: Int = 100)
   extends collection.mutable.Seq[A] {
   // These private members should not be modified.
   private val _emptyNode = new EmbeddedEmpty[A]
@@ -35,19 +36,63 @@ class DataEntryStore[A](private val _capacity: Int = 100)
   def emptyNode = _emptyNode
 
   /** Inserts element to tail of list. */
-  def insert(elem: A): Unit = ???
+  def insert(elem: A): Unit = {
+    var previousIndex = 0
+    if (_numStored == 0){
+      _headIndex = 0
+      _tailIndex = 0
+      _dataArray(_tailIndex).value = elem
+    } else if (_numStored == _capacity) {
+      //when it hits capacity it'll wrap back around
+      previousIndex = _tailIndex
+      _tailIndex = _headIndex
+      if (_headIndex == _capacity - 1){
+        _headIndex = 0
+      } else {
+        _headIndex += 1
+      }
+      _dataArray(_tailIndex).value = elem
+      _dataArray(_tailIndex).prev = previousIndex
+      _dataArray(_tailIndex).next = -1
+      _dataArray(previousIndex).next = _tailIndex
+      _dataArray(_headIndex).prev = -1
+      _numStored -= 1
+    } else {
+      previousIndex = _tailIndex
+      _tailIndex += 1
+      _dataArray(_tailIndex).value = elem
+      _dataArray(_tailIndex).prev = previousIndex
+      _dataArray(previousIndex).next = _tailIndex
+    }
+    _numStored += 1
+  }
 
   /** Removes all copies of the given element. */
-  def remove(elem: A): Boolean = ???
+  def remove(elem: A): Boolean = {
+    ???
+  }
 
   /** Returns the count of nodes containing given entry. */
-  def countEntry(entry: A): Int = ???
+  def countEntry(entry: A): Int = {
+    var sum = 0
+    for (entries <- _dataArray.iterator){
+      if (entries.value == entry){
+        sum += 1
+      }
+    }
+    sum
+  }
 
   /** Gets the element at the specified index. */
-  override def apply(idx: Int): A = ???
+  override def apply(idx: Int): A = {
+    require(idx >= 0 && idx < _numStored)
+    _dataArray(idx).value.get
+  }
 
   /** Replaces element at given index with a new value. */
-  override def update(idx: Int, elem: A): Unit = ???
+  override def update(idx: Int, elem: A): Unit = {
+    _dataArray(idx).value = elem
+  }
 
   /** Returns an Iterator that can be used only once. */
   def iterator: Iterator[A] = new Iterator[A] {
